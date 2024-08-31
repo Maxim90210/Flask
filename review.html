@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% extends "base.html" %}
+
+{% block title %}Leave a Review{% endblock %}
+
+{% block content %}
+    <h2>Leave a Review for Trainer</h2>
+    <form action="/review" method="POST">
+        <label for="trainer_id">Trainer ID:</label>
+        <input type="number" id="trainer_id" name="trainer_id" required><br>
+        <label for="rating">Rating (1-5):</label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required><br>
+        <label for="comment">Comment:</label><br>
+        <textarea id="comment" name="comment" rows="4" cols="50"></textarea><br>
+        <button type="submit">Submit Review</button>
+    </form>
+{% endblock %}
+</title>
+</head>
+<body>
+
+</body>
+</html>
