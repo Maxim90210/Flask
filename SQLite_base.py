@@ -3,13 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# Підключення до SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database_name.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Створення моделей
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -22,11 +20,9 @@ class Order(db.Model):
     phone_number = db.Column(db.String(20), nullable=False)
     cod_amount = db.Column(db.Float, nullable=False)
 
-# Ініціалізація бази даних
 with app.app_context():
     db.create_all()
 
-# Ендпоінти для роботи з користувачами
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
@@ -45,7 +41,6 @@ def get_user(id):
     user = User.query.get_or_404(id)
     return jsonify({'id': user.id, 'username': user.username, 'email': user.email})
 
-# Ендпоінти для роботи з замовленнями
 @app.route('/orders', methods=['GET'])
 def get_orders():
     orders = Order.query.all()
