@@ -10,11 +10,19 @@
         <h1>My App</h1>
         <nav>
             <a href="/">Home</a>
-            <a href="/register">Register</a>
-            <a href="/reviews">Reviews</a>
+            {% if current_user.is_authenticated %}
+                <a href="/logout">Logout</a>
+                <a href="/reviews">Leave a Review</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            {% endif %}
         </nav>
     </header>
     <main>
+        {% if message %}
+            <p style="color:red;">{{ message }}</p>
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 </body>
