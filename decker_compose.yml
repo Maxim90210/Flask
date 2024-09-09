@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: flask_app
+    command: flask run --host=0.0.0.0
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db/postgres
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  celery_worker:
+    build: .
+    container_name: celery_worker
+    command: celery -A myapp.celery worker --loglevel=info
+    depends_on:
+      - web
+      - rabbitmq
+      - db
+    environment:
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+      - CELERY_RESULT_BACKEND=rpc://
+
+volumes:
+  pgdata:
